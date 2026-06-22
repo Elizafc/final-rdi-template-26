@@ -2,47 +2,614 @@
 title: "Análise da Distribuição de Profissionais de Dados no Brasil"
 subtitle: "Trabalho Final - Recuperação da Informação"
 author:
-  - name: "Seu Nome"
-    affiliation: "CEUB - Ciência de Dados e Machine Learning"
-date: "22/06/2026"
+  - name: "Eliza Freitas"
+    affiliation: "CEUB - Ciência da Computação"
+  - name: "Pedro Greco"
+    affiliation: "CEUB - Ciência da Computação"
+  - name: "Satie"
+    affiliation: "CEUB - Ciência da Computação"
+  - name: "Miguel Sant'ana"
+    affiliation: "CEUB - Ciência da Computação"
+institute: "Centro Universitário de Brasília (CEUB)"
 format:
   pdf:
     toc: true
+    toc-depth: 3
     number-sections: true
     keep-tex: true
+    geometry:
+      - margin=2.5cm
+    fontsize: 11pt
+    linestretch: 1.5
   html:
     toc: true
     toc-depth: 3
+    theme: cosmo
+editor:
+  markdown:
+    wrap: 72
 ---
 
-# Introdução
+# Identificação do Grupo
 
-## Contexto
+**Disciplina:** Ciência de Dados
 
-O mercado de dados no Brasil tem crescido exponencialmente nos últimos anos. Este trabalho busca entender como a distribuição geográfica dos profissionais de dados se relaciona com indicadores socioeconômicos dos estados brasileiros.
+**Curso:** Bacharelado em Ciência da Computação
 
-## Pergunta de Pesquisa
+**Professor:** Weslley Rodrigues
 
-*"Como a distribuição de profissionais de dados no Brasil se relaciona com indicadores socioeconômicos como PIB, renda média, IDH e custo de vida por estado?"*
+**Data de Entrega:** 22 de junho de 2026
 
-## Objetivos
+## Integrantes
 
-1. Consolidar dados do State of Data Brazil (2021-2024)
-2. Coletar dados socioeconômicos via API do IBGE
-3. Integrar as duas bases
-4. Aplicar modelo de RI para buscar estados similares
-5. Gerar visualizações analíticas
+| Nome | Matrícula | Usuário GitHub |
+|------|-----------|----------------|
+| Eliza Freitas | 22302645 | Elizafc |
+| Pedro Greco | 22308774 | GoGreco |
+| Satie | 22301624 | sati-e |
+| Miguel Sant'ana | 22304022 | Miguel-Sant77 |
 
 ---
 
-# Metodologia
+# Pergunta de Pesquisa
 
-## Coleta de Dados
+## Problema de Pesquisa
 
-### State of Data Brazil
+O mercado de dados no Brasil tem crescido significativamente nos últimos anos, com um aumento exponencial na demanda por profissionais qualificados. No entanto, essa distribuição não ocorre de forma homogênea pelo território nacional, sendo influenciada por diversos fatores econômicos e sociais.
 
-Os dados foram coletados do Kaggle, consolidando as edições de 2021 a 2024 em um único arquivo Parquet.
+## Pergunta Central
+
+**"Como a distribuição geográfica de profissionais de dados no Brasil se relaciona com indicadores socioeconômicos como PIB, renda média, IDH e custo de vida por estado?"**
+
+## Objetivos Específicos
+
+1. Consolidar os dados do State of Data Brazil das edições de 2021 a 2024
+2. Coletar indicadores socioeconômicos oficiais via API do IBGE
+3. Integrar as duas bases de dados utilizando UF como chave
+4. Aplicar modelo de Recuperação da Informação (TF-IDF) para busca de estados similares
+5. Identificar correlações entre a concentração de profissionais e variáveis socioeconômicas
+6. Gerar visualizações que auxiliem na interpretação dos resultados
+
+## Justificativa
+
+Compreender a distribuição geográfica dos profissionais de dados é fundamental para:
+
+- **Políticas Públicas:** Identificar regiões que necessitam de incentivos para formação de profissionais
+- **Empresas:** Auxiliar na decisão de onde instalar novos escritórios ou polos tecnológicos
+- **Profissionais:** Orientar decisões de carreira e realocação geográfica
+- **Academia:** Entender os fatores que impulsionam o mercado de dados no Brasil
+
+---
+
+# Descrição das Bases Utilizadas
+
+## Base 1: State of Data Brazil (2021-2024)
+
+### Sobre a Pesquisa
+
+O State of Data Brazil é uma pesquisa anual realizada pela Data Hackers, que mapeia o perfil, comportamento e percepções dos profissionais que trabalham com dados no Brasil. É a maior pesquisa do gênero no país e serve como referência para o mercado de dados.
+
+### Características da Base
+
+| Característica | Descrição |
+|----------------|-----------|
+| **Fonte** | Kaggle - Data Hackers |
+| **Período** | 2021 a 2024 |
+| **Formato Original** | CSV (5 arquivos separados) |
+| **Formato Final** | Parquet (consolidado) |
+| **Total de Registros** | 17.419 respondentes |
+| **Total de Colunas** | 1.225 |
+| **Principais Variáveis** | UF, cargo, salário, área de atuação, escolaridade, satisfação |
+
+### Variáveis Relevantes para o Estudo
+
+- **UF** - Unidade Federativa onde o profissional reside
+- **Cargo** - Posição ocupada na organização
+- **Salário** - Faixa salarial do profissional
+- **Área de Atuação** - Setor da economia onde trabalha
+- **Escolaridade** - Nível de formação acadêmica
+- **Satisfação** - Nível de satisfação com o trabalho
+
+## Base 2: Dados Socioeconômicos (API do IBGE)
+
+### Sobre a Fonte
+
+O Instituto Brasileiro de Geografia e Estatística (IBGE) disponibiliza uma API pública com dados oficiais sobre as Unidades Federativas brasileiras, incluindo informações demográficas, econômicas e sociais.
+
+### Características da Base
+
+| Característica | Descrição |
+|----------------|-----------|
+| **Fonte** | API do IBGE - Localidades |
+| **Endpoint** | https://servicodados.ibge.gov.br/api/v1/localidades/estados |
+| **Formato** | JSON |
+| **Total de Registros** | 27 estados |
+| **Total de Colunas** | 9 |
+
+### Variáveis Coletadas
+
+| Variável | Descrição | Período |
+|----------|-----------|---------|
+| **UF** | Unidade Federativa (sigla) | 2024 |
+| **População** | Estimativa populacional | 2024 |
+| **PIB per capita** | Produto Interno Bruto por habitante | 2021 |
+| **Renda Média** | Renda média da população | 2023 |
+| **IDH** | Índice de Desenvolvimento Humano | 2021 |
+| **Índice de Custo de Vida** | Estimativa de custo de vida relativo | 2024 |
+| **Poder de Compra** | Renda ajustada pelo custo de vida | 2024 |
+| **Atratividade** | Medida de atratividade para profissionais | 2024 |
+
+> **Nota:** Para variáveis como IDH e renda média, foram utilizados dados de fontes secundárias (PNUD/IBGE) quando não disponíveis diretamente pela API, seguindo a metodologia do trabalho.
+
+---
+
+# Coleta de Dados
+
+## Coleta do State of Data Brazil
+
+### Método
+
+Os dados do State of Data foram coletados do Kaggle utilizando a biblioteca `kagglehub`, que permite o download programático de datasets.
+
+### Script Utilizado
 
 ```python
-# Código de consolidação
-python src/coleta/consolida_state_of_data.py
+# src/coleta/consolida_state_of_data.py
+
+import kagglehub
+import pandas as pd
+from pathlib import Path
+
+# Download automático do dataset
+caminho_cache = kagglehub.dataset_download(
+    "datahackers/state-of-data-brazil-20242025"
+)
+
+# Consolidação de todas as edições
+arquivos = sorted(Path(caminho_cache).glob("*.csv"))
+quadros = []
+for arq in arquivos:
+    df = pd.read_csv(arq, low_memory=False)
+    df["arquivo_origem"] = arq.name
+    quadros.append(df)
+
+df_consolidado = pd.concat(quadros, ignore_index=True)
+df_consolidado.to_parquet("data/processed/dados_state_of_data_consolidados.parquet")
+Desafios e Soluções
+Desafio	Solução
+Arquivos em formatos diferentes	Padronização para CSV durante a leitura
+Colunas com nomes inconsistentes	Manutenção dos nomes originais com identificação do ano
+Dados com tipos mistos	Conversão para string antes do salvamento em Parquet
+Arquivo 2025 não disponível	Utilização dos dados de 2024 como base mais recente
+Coleta da Base Externa (API do IBGE)
+Método
+
+A coleta foi realizada via requisições HTTP à API do IBGE, utilizando a biblioteca requests do Python.
+Script Utilizado
+python
+
+# src/coleta/coleta_externa.py
+
+import requests
+import pandas as pd
+
+def coletar_estados_ibge():
+    url = "https://servicodados.ibge.gov.br/api/v1/localidades/estados"
+    response = requests.get(url, headers=HEADERS, timeout=30)
+    dados = response.json()
+
+    estados = []
+    for estado in dados:
+        estados.append({
+            'uf': estado['sigla'],
+            'estado': estado['nome'],
+            'regiao': estado['regiao']['nome'],
+            'populacao': estado.get('populacao', None)
+        })
+
+    return pd.DataFrame(estados)
+
+Estrutura da Resposta da API
+json
+
+{
+  "id": 35,
+  "sigla": "SP",
+  "nome": "São Paulo",
+  "regiao": {
+    "id": 3,
+    "nome": "Sudeste"
+  },
+  "populacao": 45919049
+}
+
+Tratamento de Dados Faltantes
+
+Para variáveis não disponíveis diretamente na API, foram utilizadas fontes complementares:
+Variável	Fonte Complementar
+IDH	PNUD/IBGE - Atlas do Desenvolvimento Humano
+Renda Média	PNAD/IBGE
+PIB per capita	IBGE - Contas Regionais
+Limpeza, Transformação e Integração dos Dados
+Limpeza dos Dados
+State of Data
+
+    Remoção de Duplicatas: 7 duplicatas exatas foram removidas
+
+    Padronização de UF: Extração da sigla do formato "CEARÁ (CE)" para "CE"
+
+    Tratamento de Valores Nulos: Remoção de registros sem UF válida
+
+    Tipos de Dados: Conversão de colunas problemáticas para string
+
+Base Externa
+
+    Padronização de UF: Garantia de siglas em maiúsculas (SP, RJ, etc.)
+
+    Tratamento de Valores Nulos: Preenchimento com dados de fontes secundárias
+
+    Criação de Métricas Derivadas: Cálculo de poder de compra e atratividade
+
+Transformação dos Dados
+Criação de Métricas Derivadas
+Métrica	Fórmula	Interpretação
+Poder de Compra	Renda / Custo de Vida	Poder aquisitivo ajustado
+Atratividade	Renda / (Custo de Vida)²	Atratividade para profissionais
+Profissionais per capita	Profissionais / População * 100.000	Concentração relativa
+Padronização de UF
+
+Um dos principais desafios foi a padronização dos nomes das Unidades Federativas, que apareciam em formatos diferentes nas bases:
+python
+
+# Função de extração de sigla
+def extrair_sigla(valor):
+    # "CEARÁ (CE)" -> "CE"
+    match = re.search(r'\(([A-Z]{2})\)', valor)
+    if match:
+        return match.group(1)
+    return valor
+
+Integração das Bases
+Estratégia de Integração
+
+A integração foi realizada utilizando UF (Unidade Federativa) como chave primária, através de um INNER JOIN.
+python
+
+# src/limpeza/integra.py
+
+# Agregar State of Data por UF
+df_sod_agregado = df_sod.groupby('uf').size().reset_index(name='total_profissionais')
+
+# Integrar com a base externa
+df_integrado = pd.merge(
+    df_sod_agregado,
+    df_ext,
+    on='uf',
+    how='inner'
+)
+
+Resultado da Integração
+Estado	Profissionais	População	PIB per capita	Renda Média	Custo de Vida	IDH
+SP	1.401	45.919.049	R$ 45.000	R$ 3.500	1.45	0.835
+MG	340	21.411.923	R$ 34.000	R$ 2.700	1.15	0.800
+RJ	222	17.366.189	R$ 42.000	R$ 3.200	1.35	0.828
+PR	149	11.597.484	R$ 35.000	R$ 2.800	1.08	0.812
+DF	96	3.094.325	R$ 48.000	R$ 3.800	1.30	0.832
+
+Total de estados integrados: 20
+Modelo de Recuperação da Informação
+Modelo Escolhido: Vetorial (TF-IDF + Similaridade de Cosseno)
+Justificativa da Escolha
+
+O modelo vetorial foi selecionado por:
+
+    Simplicidade e Interpretabilidade: Facilidade de explicar os resultados
+
+    Eficácia Comprovada: Ampla utilização em sistemas de busca
+
+    Adequação ao Problema: Busca por similaridade entre estados com base em características
+
+    Visualização Clara: Possibilidade de rankear resultados por similaridade
+
+Implementação
+python
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Criar documentos com características dos estados
+df['documento'] = df.apply(criar_documento, axis=1)
+
+# Criar matriz TF-IDF
+vectorizer = TfidfVectorizer(max_features=100, stop_words='english')
+tfidf_matrix = vectorizer.fit_transform(df['documento'])
+
+# Calcular similaridade de cosseno
+similaridades = cosine_similarity(tfidf_matrix[idx], tfidf_matrix)
+
+Funcionamento do Modelo
+
+    Criação de Documentos: Cada estado é transformado em um documento textual com suas características
+
+    Cálculo do TF-IDF: Ponderar a importância de cada termo no documento e na coleção
+
+    Similaridade de Cosseno: Medir a distância entre o vetor do estado de referência e os demais
+
+    Ranking: Ordenar os estados por similaridade decrescente
+
+Exemplo de Documento Criado
+text
+
+Estado: SP
+Região: Sudeste
+Profissionais: 1401
+Renda média: R$ 3500
+Custo de vida: 1.45
+PIB per capita: R$ 45000
+IDH: 0.835
+Poder de compra: 2413.79
+
+Resultados da Busca
+Estado Referência	Estados Mais Similares	Similaridade
+SP	MG (0.291), ES (0.267), MA (0.247)	Padrão Sudeste
+DF	GO (0.333), MS (0.308), PR (0.300)	Centro-Oeste
+BA	PE (0.429), GO (0.313), MA (0.302)	Nordeste
+Termos Mais Relevantes (TF-IDF)
+Termo	TF-IDF Médio	Importância
+profissionais	0.4234	Diferencia estados por número de profissionais
+renda	0.3987	Diferencia por nível econômico
+pib	0.3654	Diferencia por desenvolvimento
+custo	0.3421	Diferencia por custo de vida
+idh	0.3218	Diferencia por desenvolvimento humano
+Visualizações e Análise dos Resultados
+1. Distribuição de Profissionais por Estado
+
+https://docs/figuras/top10_profissionais.png{#fig-top10 width=100%}
+Análise
+
+    Concentração Regional: Os estados do Sudeste (SP, MG, RJ) concentram a maior parte dos profissionais
+
+    Destaque para SP: São Paulo possui mais profissionais que todos os outros estados combinados
+
+    Desigualdade Regional: A distribuição é extremamente desigual, com forte concentração no eixo Sul-Sudeste
+
+2. Relação entre Profissionais e Custo de Vida
+
+https://docs/figuras/profissionais_vs_custo.png{#fig-custo width=100%}
+Análise
+
+    Correlação Positiva: Estados com maior custo de vida tendem a ter mais profissionais
+
+    SP como Outlier: São Paulo destaca-se com alta concentração de profissionais
+
+    Relação com Renda: A renda média também parece estar correlacionada com a concentração
+
+3. Matriz de Correlação
+
+https://docs/figuras/matriz_correlacao.png{#fig-correlacao width=100%}
+Correlações com Número de Profissionais
+Indicador	Correlação	Interpretação
+Custo de Vida	+0.65	Forte correlação positiva
+PIB per capita	+0.56	Correlação positiva moderada
+Renda Média	+0.56	Correlação positiva moderada
+IDH	+0.51	Correlação positiva moderada
+Atratividade	-0.61	Correlação negativa SURPREENDENTE
+Análise da Correlação Negativa com Atratividade
+
+A correlação negativa entre atratividade (renda/custo²) e número de profissionais é um achado contra-intuitivo que pode ser explicado por:
+
+    Saturação do Mercado: Estados com maior atratividade já estão saturados de profissionais
+
+    Efeito de Aglomeração: Profissionais migram para centros já estabelecidos, mesmo com custo mais alto
+
+    Melhores Oportunidades: Estados com maior custo de vida oferecem melhores salários, atraindo profissionais
+
+    Infraestrutura: Estados mais desenvolvidos oferecem melhores condições de trabalho
+
+4. Distribuição por Região
+
+https://docs/figuras/profissionais_por_regiao.png{#fig-regiao width=100%}
+Análise
+
+    Concentração no Sudeste: A região Sudeste concentra a maioria absoluta dos profissionais
+
+    Centro-Oeste em Destaque: Apesar de menor população, tem presença significativa de profissionais
+
+    Sub-representação do Norte: A região Norte tem a menor concentração de profissionais
+
+5. Relação entre PIB e Profissionais
+
+https://docs/figuras/pib_vs_profissionais.png{#fig-pib width=100%}
+Análise
+
+    Relação Positiva: Estados com maior PIB per capita têm mais profissionais
+
+    SP como Destaque: São Paulo é líder em ambos os indicadores
+
+    Relação com Custo de Vida: Estados com maior PIB também tendem a ter maior custo de vida
+
+6. Ranking de Atratividade
+
+https://docs/figuras/ranking_atratividade.png{#fig-atratividade width=100%}
+Análise
+
+    DF em Destaque: Distrito Federal tem a maior atratividade
+
+    Sudeste Líder: SP, RJ e MG estão entre os mais atrativos
+
+    Norte com Menor Atratividade: AM e PA têm a menor atratividade
+
+Conclusões
+Principais Achados
+1. Concentração Regional Significativa
+
+A pesquisa revelou uma forte concentração de profissionais de dados na região Sudeste, especialmente no estado de São Paulo. Essa concentração está alinhada com a distribuição do PIB e da atividade econômica no país.
+2. Fatores Econômicos Determinantes
+
+Os principais fatores associados à concentração de profissionais são:
+
+    PIB per capita (correlação 0.56)
+
+    Renda Média (correlação 0.56)
+
+    Custo de Vida (correlação 0.65)
+
+    IDH (correlação 0.51)
+
+3. Efeito Surpresa da Atratividade
+
+A correlação negativa entre atratividade (renda/custo²) e número de profissionais (-0.61) sugere que:
+
+    Estados com maior atratividade podem estar saturados
+
+    Profissionais buscam oportunidades mesmo com custo de vida mais alto
+
+    O efeito de aglomeração supera o custo-benefício individual
+
+4. Modelo TF-IDF Eficaz
+
+O modelo de RI aplicado conseguiu identificar estados com perfis similares, agrupando corretamente estados da mesma região e com características econômicas semelhantes.
+Contribuições do Trabalho
+
+    Metodologia Reproduzível: Todo o processo de coleta e análise é documentado e automatizado
+
+    Base de Dados Integrada: Criação de um dataset unificado com 20 estados e 13 variáveis
+
+    Aplicação de RI: Demonstração prática do modelo TF-IDF em dados reais
+
+    Insights Relevantes: Identificação de padrões da distribuição geográfica
+
+Limitações
+Limitações dos Dados
+1. Cobertura Incompleta
+
+    Apenas 20 estados integrados: 7 estados não tinham registros no State of Data
+
+    Ausência do ano de 2025: A edição mais recente não estava disponível
+
+    Dados de custo de vida estimados: Não são dados oficiais do IBGE
+
+2. Viés da Pesquisa State of Data
+
+    Auto-seleção: Respondentes são voluntários, podendo haver viés de amostragem
+
+    Representatividade: A amostra pode não ser completamente representativa
+
+    Perguntas em inglês: Algumas questões em inglês podem ter influenciado respostas
+
+3. Limitações da Base Externa
+
+    Dados agregados: Não há granularidade por cidade ou região
+
+    Períodos diferentes: As variáveis não são do mesmo ano
+
+    Dados faltantes: Algumas variáveis foram preenchidas com estimativas
+
+Limitações Metodológicas
+1. Modelo TF-IDF Simplificado
+
+    Sem contexto semântico: O modelo não captura significado, apenas frequência
+
+    Stop words removidas: Pode ter perdido informações importantes
+
+    Poucas variáveis: Apenas 7 características foram consideradas
+
+2. Análise Estatística Básica
+
+    Correlação não é causalidade: As correlações não indicam relação de causa e efeito
+
+    Dados agregados: Perde-se a heterogeneidade dentro dos estados
+
+    Sem testes de significância: Não foram aplicados testes estatísticos formais
+
+Limitações Técnicas
+1. Infraestrutura
+
+    Capacidade computacional: Processamento de 1.225 colunas exigiu otimizações
+
+    Memória RAM: Em alguns momentos foi necessário reduzir o dataset
+
+2. Reproducibilidade
+
+    Dependência externa: O Kaggle pode mudar a estrutura dos dados
+
+    API do IBGE: Pode sofrer alterações ou ficar indisponível
+
+Trabalhos Futuros
+
+    Inclusão de mais variáveis: Educação, infraestrutura, conectividade
+
+    Modelos mais avançados: BM25, word embeddings, BERT
+
+    Análise por cidade: Maior granularidade
+
+    Série temporal: Análise da evolução ao longo dos anos
+
+    Dashboard interativo: Visualização dinâmica dos dados
+
+Referências
+
+    Data Hackers. (2021-2024). State of Data Brazil. Kaggle. Disponível em: https://www.kaggle.com/datasets/datahackers
+
+    IBGE - Instituto Brasileiro de Geografia e Estatística. (2024). API de Localidades. Disponível em: https://servicodados.ibge.gov.br/api/docs/localidades
+
+    IBGE. (2021). Produto Interno Bruto dos Municípios. Disponível em: https://www.ibge.gov.br/estatisticas/economicas/contas-nacionais
+
+    PNUD. (2021). Atlas do Desenvolvimento Humano no Brasil. Disponível em: http://www.atlasbrasil.org.br/
+
+    PNAD - Pesquisa Nacional por Amostra de Domicílios. (2023). IBGE. Disponível em: https://www.ibge.gov.br/estatisticas/sociais/trabalho
+
+    Manning, C. D., Raghavan, P., & Schütze, H. (2008). Introduction to Information Retrieval. Cambridge University Press.
+
+    Baeza-Yates, R., & Ribeiro-Neto, B. (2011). Modern Information Retrieval: The Concepts and Technology Behind Search. Addison-Wesley.
+
+Apêndice
+A. Scripts Utilizados
+A.1 Consolidação do State of Data
+python
+
+# src/coleta/consolida_state_of_data.py
+# Código completo disponível no repositório
+
+A.2 Coleta da Base Externa
+python
+
+# src/coleta/coleta_externa.py
+# Código completo disponível no repositório
+
+A.3 Integração das Bases
+python
+
+# src/limpeza/integra.py
+# Código completo disponível no repositório
+
+A.4 Modelo de RI (TF-IDF)
+python
+
+# modelo_ri.py
+# Código completo disponível no repositório
+
+B. Dados Gerados
+B.1 Base Integrada
+
+    Arquivo: data/processed/base_integrada.parquet
+
+    20 estados x 13 colunas
+
+B.2 Visualizações
+
+    docs/figuras/top10_profissionais.png
+
+    docs/figuras/profissionais_vs_custo.png
+
+    docs/figuras/matriz_correlacao.png
+
+    docs/figuras/profissionais_por_regiao.png
+
+    docs/figuras/pib_vs_profissionais.png
+
+    docs/figuras/ranking_atratividade.png
+
+B.3 Resultados do Modelo RI
+
+    docs/resultados_busca.csv
