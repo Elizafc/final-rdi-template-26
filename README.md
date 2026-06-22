@@ -117,7 +117,7 @@ quarto render relatorio.qmd
 | Nome | Matrícula |     E-mail institucional    | Usuário GitHub |
 |------|-----------|-----------------------------|----------------|
 |Eliza | 22302645  |                             |Elizafc         |
-|Satie | 22301624  |                             |Sati-e          |
+|Satie | 22301624  | satie.kc@sempreceub.com     |Sati-e          |
 |Pedro | 22308774  | rgreco.pedro@sempreceub.com | GoGreco        |
 |      |           |                             |                |
 
