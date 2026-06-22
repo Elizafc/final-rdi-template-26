@@ -108,18 +108,18 @@ quarto render relatorio.qmd
 
 **Nome do grupo:**
 
-**Tema / pergunta de pesquisa:**
+**Tema / pergunta de pesquisa:** *"Como a distribuição geográfica de profissionais de dados no Brasil se relaciona com indicadores socioeconômicos como PIB, renda média, IDH e custo de vida por estado?"*
 
-**Base externa escolhida (fonte + método de coleta):**
+**Base externa escolhida (fonte + método de coleta):** API do IBGE - Localidades (https://servicodados.ibge.gov.br/api/v1/localidades/estados). Coleta realizada via requisições HTTP com a biblioteca `requests` do Python, obtendo dados de população, PIB per capita, renda média, IDH e índice de custo de vida por estado.
 
 **Integrantes:**
 
 | Nome | Matrícula | E-mail institucional | Usuário GitHub |
 |------|-----------|----------------------|----------------|
-|      |           |                      |                |
+|Eliza | 22302645  |                      |Elizafc         |
 |      |           |                      |                |
 |      |           |                      |                |
 
-**Modelo(s) de RI utilizado(s):**
+**Modelo(s) de RI utilizado(s):** com similaridade de cosseno para busca de estados com perfis similares
 
 **Resumo do projeto (3–5 linhas):**
