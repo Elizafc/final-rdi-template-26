@@ -1,99 +1,48 @@
 ---
-title: "Trabalho Final — Recuperação da Informação"
-subtitle: "Análise comparativa: State of Data Brazil × [base externa do grupo]"
-author: "Grupo X — Integrante 1, Integrante 2, Integrante 3"
-date: today
-date-format: "DD/MM/YYYY"
+title: "Análise da Distribuição de Profissionais de Dados no Brasil"
+subtitle: "Trabalho Final - Recuperação da Informação"
+author:
+  - name: "Seu Nome"
+    affiliation: "CEUB - Ciência de Dados e Machine Learning"
+date: "22/06/2026"
 format:
-  html:
-    toc: true
-    toc-depth: 3
-    number-sections: true
-    code-fold: show
-    df-print: kable
   pdf:
     toc: true
     number-sections: true
-jupyter: python3
-execute:
-  echo: true
-  warning: false
-  message: false
+    keep-tex: true
+  html:
+    toc: true
+    toc-depth: 3
 ---
 
-# Introdução e pergunta de pesquisa
+# Introdução
 
-> Apresentem aqui o tema do grupo e a **pergunta** que o trabalho responde.
-> Qual base externa escolheram e por quê ela conversa com o State of Data?
+## Contexto
 
-# Coleta das bases
+O mercado de dados no Brasil tem crescido exponencialmente nos últimos anos. Este trabalho busca entender como a distribuição geográfica dos profissionais de dados se relaciona com indicadores socioeconômicos dos estados brasileiros.
 
-## State of Data Brazil (consolidação)
+## Pergunta de Pesquisa
 
-A consolidação das edições é feita pelo script `src/coleta/consolida_state_of_data.py`,
-que empilha os CSVs e gera o `.parquet`.
+*"Como a distribuição de profissionais de dados no Brasil se relaciona com indicadores socioeconômicos como PIB, renda média, IDH e custo de vida por estado?"*
 
-```{python}
-#| label: carregar-sod
-from pathlib import Path
-import pandas as pd
+## Objetivos
 
-def ler_parquet_robusto(caminho):
-    """Lê parquet contornando incompatibilidades pandas/pyarrow."""
-    caminho = str(caminho)
-    try:
-        import pyarrow.parquet as pq
-        return pq.read_table(caminho).to_pandas()
-    except Exception:
-        pass
-    try:
-        return pd.read_parquet(caminho, engine="fastparquet")
-    except Exception:
-        return pd.read_parquet(caminho)
+1. Consolidar dados do State of Data Brazil (2021-2024)
+2. Coletar dados socioeconômicos via API do IBGE
+3. Integrar as duas bases
+4. Aplicar modelo de RI para buscar estados similares
+5. Gerar visualizações analíticas
 
-df_sod = ler_parquet_robusto("data/processed/dados_state_of_data_consolidados.parquet")
-print(f"State of Data: {df_sod.shape[0]:,} linhas x {df_sod.shape[1]:,} colunas")
-```
+---
 
-## Base externa (scraping / API)
+# Metodologia
 
-> Descrevam a fonte, o método de coleta e mostrem uma amostra.
-> A coleta está em `src/coleta/coleta_externa.py`.
+## Coleta de Dados
 
-```{python}
-#| label: carregar-externa
-df_ext = pd.read_csv("data/raw/base_externa.csv")
-df_ext.head()
-```
+### State of Data Brazil
 
-# Limpeza, padronização e integração
+Os dados foram coletados do Kaggle, consolidando as edições de 2021 a 2024 em um único arquivo Parquet.
 
-> Expliquem as decisões de limpeza e **como** integraram as duas bases.
-> O código vive em `src/limpeza/integra.py`.
-
-# Modelagem de Recuperação da Informação
-
-> Apliquem **pelo menos um** modelo de RI (Booleano, Vetorial/TF-IDF, BM25,
-> Dense/embeddings) e justifiquem a escolha. Mostrem os resultados.
-
-```{python}
-#| label: modelo-ri
-# Exemplo de espaço para o modelo escolhido pelo grupo.
-# Ex.: TF-IDF + similaridade do cosseno, ou embeddings, etc.
-```
-
-# Resultados e visualizações
-
-> Gráficos com interpretação. Não basta mostrar — expliquem o que cada
-> resultado significa para a pergunta de pesquisa.
-
-# Discussão crítica
-
-> O que funcionou, o que não funcionou e por quê. Limitações dos dados e
-> do modelo. Onde a análise poderia avançar.
-
-# Conclusão
-
-> Resposta objetiva à pergunta de pesquisa, com base nas evidências.
-
-# Referências
+```python
+# Código de consolidação
+python src/coleta/consolida_state_of_data.py
