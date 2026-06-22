@@ -123,4 +123,79 @@ quarto render relatorio.qmd
 
 **Modelo(s) de RI utilizado(s):** com similaridade de cosseno para busca de estados com perfis similares
 
-**Resumo do projeto (3–5 linhas):**
+**Resumo do projeto (3–5 linhas):** Este projeto integra dados do State of Data Brazil (2021-2024) com indicadores socioeconômicos da API do IBGE para analisar a distribuição geográfica dos profissionais de dados no Brasil. Foram aplicados modelos de Recuperação da Informação (TF-IDF + Similaridade de Cosseno) para identificar estados com perfis similares, gerando visualizações que revelam correlações entre a concentração de profissionais e variáveis como PIB, renda, IDH e custo de vida. O projeto é totalmente reproduzível através de scripts Python e relatório gerado em Quarto.
+
+---
+
+## Checklist de Entrega
+
+- [x] Scripts de coleta das duas bases em `src/coleta/`
+- [x] Script de consolidação do State of Data, gerando o `.parquet`
+- [x] Script de coleta da base externa (API do IBGE)
+- [x] Limpeza e integração em `src/limpeza/`
+- [x] Modelo de RI aplicado (TF-IDF + Similaridade de Cosseno)
+- [x] Visualizações analíticas com interpretação
+- [x] Relatório-fonte (`.qmd`) + PDF gerado a partir dele
+- [x] README preenchido
+- [x] Repositório **privado** com `Professor-Weslley` como colaborador
+- [x] Commits de **todos** os integrantes
+- [x] Projeto reproduzível do início ao fim
+
+---
+
+## Tecnologias Utilizadas
+
+- **Python 3.12** - Linguagem principal
+- **Pandas** - Manipulação de dados
+- **NumPy** - Operações numéricas
+- **Scikit-learn** - TF-IDF e similaridade de cosseno
+- **Matplotlib/Seaborn** - Visualizações
+- **Quarto** - Geração do relatório PDF
+- **Requests** - Coleta da API
+- **PyArrow/FastParquet** - Leitura/escrita de arquivos Parquet
+- **KaggleHub** - Download automático dos dados do State of Data
+
+---
+
+## Resultados Principais
+
+### Correlações com Número de Profissionais de Dados
+
+| Indicador | Correlação | Interpretação |
+|-----------|------------|---------------|
+| Custo de Vida | +0.65 | Estados com maior custo têm MAIS profissionais |
+| PIB per capita | +0.56 | Estados mais ricos têm MAIS profissionais |
+| Renda média | +0.56 | Estados com maior renda têm MAIS profissionais |
+| IDH | +0.51 | Estados com melhor IDH têm MAIS profissionais |
+| Atratividade | -0.61 | Estados com maior atratividade têm MENOS profissionais (efeito de saturação) |
+
+### Estados com Mais Profissionais de Dados
+
+| Posição | Estado | Profissionais |
+|---------|--------|---------------|
+| 1º | SP | 1.401 |
+| 2º | MG | 340 |
+| 3º | RJ | 222 |
+| 4º | PR | 149 |
+| 5º | RS | 136 |
+
+### Modelo TF-IDF - Estados Similares
+
+| Estado Referência | Mais Similar | Similaridade |
+|-------------------|--------------|--------------|
+| SP | MG | 0.2912 |
+| DF | GO | 0.3331 |
+| BA | PE | 0.4293 |
+
+---
+
+## Observações Finais
+
+- Os dados do State of Data são baixados automaticamente via `kagglehub`
+- A base externa é coletada via API pública do IBGE (sem necessidade de autenticação)
+- O projeto é totalmente reproduzível: basta clonar e executar os scripts em ordem
+- O relatório PDF é gerado a partir do arquivo `relatorio.qmd`
+
+---
+
+**Última atualização:** 22/06/2026
