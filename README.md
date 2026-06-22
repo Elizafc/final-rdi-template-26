@@ -117,7 +117,7 @@ quarto render relatorio.qmd
 | Nome | Matrícula | E-mail institucional | Usuário GitHub |
 |------|-----------|----------------------|----------------|
 |Eliza | 22302645  |                      |Elizafc         |
-|      |           |                      |                |
+|Satie | 22301624  |                      |Sati-e          |
 |      |           |                      |                |
 
 **Modelo(s) de RI utilizado(s):** com similaridade de cosseno para busca de estados com perfis similares
