@@ -119,7 +119,7 @@ quarto render relatorio.qmd
 |Eliza | 22302645  |                             |Elizafc         |
 |Satie | 22301624  | satie.kc@sempreceub.com     |Sati-e          |
 |Pedro | 22308774  | rgreco.pedro@sempreceub.com | GoGreco        |
-|      |           |                             |                |
+|Miguel| 22304022  |miguel.menezes@sempreceub.com| Miguel-Sant77  |
 
 **Modelo(s) de RI utilizado(s):** com similaridade de cosseno para busca de estados com perfis similares
 
